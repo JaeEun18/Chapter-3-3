@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,12 +13,29 @@ public class GameManager : MonoBehaviour
     private float attackTime = 0;  //진행되는 시간
     private float hitTime = 0.4f;     //공격 타이밍 조절
 
+    private Setting setting;
+
+    [Header("UI")]
+    public Text textScore;
+
+
     // Start is called before the first frame update
     void Start()
     {
         playerAnimator = player.GetComponent<Animator>();
         StartAutoClick();
+        setting = GetComponent<Setting>();
+
+        if (setting == null)
+        {
+            Debug.LogError("Setting 컴포넌트를 찾을 수 없습니다. GameObject에 Setting 스크립트가 붙어 있는지 확인하세요.");
+            return;
+        }
+
+        textScore.text = setting.StringScore();
+
     }
+
 
     // Update is called once per frame
     void Update()
@@ -35,6 +53,9 @@ public class GameManager : MonoBehaviour
             {
                 attackTime = 0f;
                 isAttack = false;
+
+                setting.GetGold(); // 점수 증가
+                textScore.text = setting.StringScore(); // UI 업데이트
             }
 
             return;
