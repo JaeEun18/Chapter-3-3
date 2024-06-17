@@ -62,4 +62,10 @@ public class Setting : MonoBehaviour
     {
         return FormatNum(PayScore);
     }
+
+    // GameManager에서 호출하여 gold 값을 반환하는 메서드 추가
+    public BigInteger GetGold()
+    {
+        return Score / 10;
+    }
 }

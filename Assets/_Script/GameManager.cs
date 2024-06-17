@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     public Text textScore;
+    public Text textGold; // Gold UI 텍스트 필드 추가
     public Button itemButton; // 아이템 버튼 추가
     public float itemEffectDuration = 10f; // 아이템 효과 지속 시간
     private bool isItemEffectActive = false; // 아이템 효과 활성화 여부
@@ -27,6 +28,14 @@ public class GameManager : MonoBehaviour
 
     private int itemEffectScoreIncrement = 100; // 아이템 효과로 증가되는 점수
 
+    private int score = 0; // 현재 점수
+    private int gold = 0; // 현재 골드
+
+
+    // 아이템 효과로 증가되는 점수와 골드 증가량
+    private int scoreInc = 100; // 아이템 효과로 증가되는 점수
+    private int goldInc = 10; // 아이템 효과로 증가되는 골드
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,14 +45,16 @@ public class GameManager : MonoBehaviour
 
         if (setting == null)
         {
-            Debug.LogError("Setting 컴포넌트를 찾을 수 없습니다. GameObject에 Setting 스크립트가 붙어 있는지 확인하세요.");
+            Debug.LogError("확인용 11");
             return;
         }
 
         textScore.text = setting.StringScore();
+        textGold.text = gold.ToString(); // 초기 Gold UI 텍스트 설정
 
         // 아이템 버튼 클릭 이벤트 등록
         itemButton.onClick.AddListener(ActivateItemEffect);
+
     }
 
     // Update is called once per frame
@@ -73,6 +84,7 @@ public class GameManager : MonoBehaviour
                 if (!isItemEffectActive)
                 {
                     setting.AddScore(); // 점수 증가
+                    UpdateGoldUI(); // Gold UI 업데이트
                     textScore.text = setting.StringScore(); // UI 업데이트
                 }
             }
@@ -131,15 +143,28 @@ public class GameManager : MonoBehaviour
         if (itemEffectTimer >= itemEffectInterval)
         {
             itemEffectTimer = 0f;
-            setting.AddScore(itemEffectScoreIncrement); // 점수 증가
+            setting.AddScore(scoreInc); // 점수 증가
+            score += scoreInc; // 현재 점수에도 반영
             textScore.text = setting.StringScore(); // UI 업데이트
+
+            if (!isItemEffectActive)
+            {
+                int goldIncrement = scoreInc / 10 * goldInc;
+                gold += goldIncrement;
+                textGold.text = gold.ToString(); // Gold UI 업데이트
+            }
         }
 
-        // 시간이 다 되면 아이템 효과 비활성화
         itemEffectTimeLeft -= Time.deltaTime;
         if (itemEffectTimeLeft <= 0)
         {
             isItemEffectActive = false;
         }
+    }
+
+    private void UpdateGoldUI()
+    {
+        gold = (int)(setting.GetGold()); // setting.GetGold() 반환값을 형변환하여 gold에 저장
+        textGold.text = gold.ToString(); // Gold UI 업데이트
     }
 }
