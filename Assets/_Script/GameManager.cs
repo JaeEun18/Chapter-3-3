@@ -6,17 +6,17 @@ public class GameManager : MonoBehaviour
 {
     [Header("Player")]
     public GameObject player;
-    private Animator playerAnimator;
+    public Animator playerAnimator;
 
-    private bool isAttack = false; //공격 시 모션에 맞게 눌러지도록 조절
+    public bool isAttack = false; //공격 시 모션에 맞게 눌러지도록 조절
     private float attackTime = 0;  //진행되는 시간
-    [SerializeField]
-    private float hitTime = 0;     //공격 타이밍 조절
+    private float hitTime = 0.4f;     //공격 타이밍 조절
 
     // Start is called before the first frame update
     void Start()
     {
-        playerAnimator = player.GetComponent<Animator>(); 
+        playerAnimator = player.GetComponent<Animator>();
+        StartAutoClick();
     }
 
     // Update is called once per frame
@@ -31,11 +31,13 @@ public class GameManager : MonoBehaviour
         {
             attackTime += Time.deltaTime;
 
-            if(attackTime > hitTime)
+            if(attackTime > hitTime) //다시 클릭하기 위해 세팅
             {
                 attackTime = 0f;
                 isAttack = false;
             }
+
+            return;
         }
 
         if(Input.GetMouseButtonDown(0)) 
@@ -56,9 +58,17 @@ public class GameManager : MonoBehaviour
                     enemy.EnemyOnClick();
 
                     playerAnimator.SetTrigger("Attack");
+
+                    isAttack = true;
                 }
             }
 
         }
+    }
+
+    private void StartAutoClick()
+    {
+        AutoClick autoClickScript = gameObject.AddComponent<AutoClick>();
+        autoClickScript.enabled = true;
     }
 }

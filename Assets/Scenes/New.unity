@@ -259,6 +259,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 471657622}
+  playerAnimator: {fileID: 471657623}
+  isAttack: 0
 --- !u!4 &509495338
 Transform:
   m_ObjectHideFlags: 0
